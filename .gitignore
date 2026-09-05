@@ -1,0 +1,6 @@
+__pycache__/
+*.pyc
+*_calib.txt
+*.mp4
+*.mov
+frames/
