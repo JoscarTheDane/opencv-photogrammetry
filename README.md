@@ -81,12 +81,15 @@ dumps evenly-spaced PNGs into a folder next to the video.
 - The `.gitignore` excludes `*_calib.txt` and any videos/frames by
   default: calibration outputs are per-rig artifacts, not source code.
 
-## Honest scope
+## Where this sits in the pipeline
 
-This is the *preparation* stage of a photogrammetry workflow — intrinsics
-plus a clean frame set. It does not do feature matching, triangulation,
-dense reconstruction, or meshing; that is what you hand the calibrated
-frames and K matrix to (ColMap, Metashape, Meshroom, etc.).
+This repo is the *preparation* stage: known intrinsics plus a clean,
+evenly-spaced frame set. The reconstruction stage — feature matching,
+triangulation, dense reconstruction, and meshing — is completed
+downstream with **KIRI Engine** (the day-to-day workhorse for quick
+turnaround), **ColMap**, and **AliceVision (ALICE)** (the fully
+open-source route). The calibrated K matrix and distortion
+coefficients written out here feed directly into that stage.
 
 ---
 
