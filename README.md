@@ -20,20 +20,25 @@ into measurement, not after.
 
 ## Pipeline
 
-```
-checkerboard video ──▶ CameraCalibration.bat
-                          │
-                          ▼
-              CameraCalibrator.py (OpenCV)
-                          │
-                          ▼
-            <video>_calib.txt  (K matrix, distortion, per-frame rvec/tvec)
+```mermaid
+flowchart TD
+    V1["checkerboard video"] --> B1["CameraCalibration.bat<br/>drag and drop"]
+    B1 --> E1["CameraCalibrator.py, OpenCV<br/>find corners, sub-pixel refine,<br/>cv2.calibrateCamera"]
+    E1 --> R1{"3 or more good<br/>corner detections?"}
+    R1 -->|"no"| FAIL["refuses to write a matrix —<br/>a flat head-on board is degenerate"]
+    R1 -->|"yes"| OUT1["video_calib.txt<br/>K matrix · distortion coefficients<br/>per-frame rvec and tvec"]
 
-any survey video ──▶ "Video to Picture.bat"
-                       │  (ffprobe duration → frame count → ffmpeg fps filter)
-                       ▼
-              <video>/  → evenly-spaced PNG frames for SfM / photogrammetry
+    V2["any survey video"] --> B2["Video to Picture.bat"]
+    B2 --> E2["ffprobe reads duration<br/>computes the interval<br/>for the frame count you ask for"]
+    E2 --> OUT2["video/ folder<br/>evenly-spaced PNG frames"]
+
+    OUT1 --> NEXT["downstream reconstruction<br/>KIRI Engine · ColMap · AliceVision"]
+    OUT2 --> NEXT
 ```
+
+Both halves exist for the same reason: a reconstruction is only as good as its inputs. The
+intrinsics must be known *before* imagery is measured, and the frame set must be evenly spaced
+rather than whatever the operator happened to grab.
 
 ## Requirements
 
